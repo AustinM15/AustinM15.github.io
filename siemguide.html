@@ -15,10 +15,10 @@
      Keep this file next to index.html in the repo root.
      ============================================================ -->
 
-<title>Tidewater — Sam Ellison</title>
-<meta name="description" content="A query console for a 40-billion-row telemetry store, built to return the first rows in under a second.">
-<meta property="og:title" content="Tidewater — a query console for very large telemetry">
-<meta property="og:description" content="Streaming partial results so analysts stop waiting on the spinner.">
+<title>SIEM Quick-Start Guide - Austin Mason</title>
+<meta name="description" content="How I increased my organizations system visibility from nothing to something.">
+<meta property="og:title" content="SIEM Quick-Start Guide, Basics and Good Practice">
+<meta property="og:description" content="Increasing system visibility and alerting anomalies.">
 <meta property="og:type" content="article">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -169,7 +169,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;
 
 <header class="bar">
   <div class="wrap">
-    <a class="mark" href="index.html">Sam Ellison</a>
+    <a class="mark" href="index.html">Austin Mason</a>
     <a class="back" href="index.html#work"><span>←</span> All work</a>
   </div>
 </header>
@@ -182,25 +182,20 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;
       <div class="sheet top">
         <p class="kicker">
           <span class="chip">2026</span>
-          <span class="label">Query console</span>
+          <span class="label">SIEM Quick-Start Guide</span>
         </p>
 
-        <h1>Tidewater</h1>
+        <h1>SIEM Quick-Start Guide</h1>
 
-        <p class="summary">A query console for a <b>40-billion-row telemetry store</b>. It streams partial results, so the first rows land in under a second instead of after a two-minute stare at a spinner.</p>
+        <p class="summary">A look into how I chose and set up my organizations first SIEM platform to increase visibility across our organizations endpoints.</p>
 
         <dl class="facts">
-          <div><dt>Role</dt><dd>Lead engineer</dd></div>
-          <div><dt>Team</dt><dd>Three engineers, one designer</dd></div>
-          <div><dt>Timeline</dt><dd>Eight months, shipped Feb 2026</dd></div>
-          <div><dt>Stack</dt><dd>TypeScript, Rust, DuckDB, WebGL</dd></div>
-          <div><dt>Status</dt><dd>In production, ~400 daily users</dd></div>
+          <div><dt>Role</dt><dd>Information Security Coordinator</dd></div>
+          <div><dt>Timeline</dt><dd>One Month, shipped June 2026</dd></div>
+          <div><dt>Stack</dt><dd>[Redacted for Security Reasons]</dd></div>
+          <div><dt>Status</dt><dd>In production, 20 endpoints</dd></div>
         </dl>
 
-        <div class="links">
-          <a class="btn solid" href="#" target="_blank" rel="noopener">Visit the live app</a>
-          <a class="btn ghost" href="#" target="_blank" rel="noopener">Read the source</a>
-        </div>
       </div>
     </div>
   </section>
@@ -214,9 +209,9 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;
           <!-- Swap the block below for your real screenshot:
           <img src="images/tidewater-console.png" alt="The Tidewater query console showing results streaming into a table while the query is still running."> -->
 
-          <div class="ph"><p>Replace this block with<br><code>&lt;img src="images/tidewater.png" alt="…"&gt;</code><br><br>Aim for roughly 2000px wide. Always write real alt text.</p></div>
+          <div class="ph"><p>Image Yet to Be Determined</p></div>
 
-          <figcaption>The console mid-query: rows fill in from the top while the progress bar in the header keeps counting. Analysts can start reading before the scan finishes.</figcaption>
+          <figcaption>Image Yet to Be Determined</figcaption>
         </figure>
       </div>
     </div>
@@ -227,13 +222,12 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;
     <div class="wrap">
       <div class="sheet prose rise">
         <h2>The problem</h2>
-        <p>Our analysts had a good query engine and a bad way to talk to it. The old console sent a query, waited for the complete result set, then rendered it all at once. On the telemetry tables — the ones people actually needed — that meant <b>90 to 140 seconds of blank screen</b> before anything appeared.</p>
-        <p>The cost wasn't only the waiting. Because feedback was so slow, people stopped exploring. They wrote one careful query a morning instead of ten rough ones, and typos cost two minutes each. Support tickets described it as the tool being broken, when the engine underneath was returning rows the whole time.</p>
-        <h3>Constraints we started with</h3>
+        <p>Lack of visibility can be one of the most damaging vulnerabilities that your network can face. Specifically, not monitoring system and network logs is like giving threat actors a golden ticket to staying hidden inside your systems, without a real way to know they are there until they do real damage. </p>
+        <p>At my organization, I was left with the challenge of creating this visibility. No SIEM solution had been in practice yet, and so it was on me to decide which software, which configurations, and how to deploy this vital piece of security software that every system relies on today.</p>
+        <h3>Constraints I started with</h3>
         <ul>
-          <li>The storage layer couldn't change — it was shared with three other teams.</li>
-          <li>Result sets are frequently over a million rows, so the browser can't hold them all.</li>
-          <li>Analysts live in this tool for hours; it had to stay responsive while data streamed.</li>
+          <li>The tight budget constraints of a small business</li>
+          <li>Consumer-grade hardware lacking compute capabilities</li>
         </ul>
       </div>
     </div>
@@ -244,17 +238,35 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;
     <div class="wrap">
       <div class="sheet prose rise">
         <h2>The approach</h2>
-        <p>The insight was that <b>nobody reads a million rows</b> — they read the first thirty and decide whether the query was right. So the goal stopped being "return results faster" and became "show something true as early as possible."</p>
+        <p>I was starting from the ground, and so the only way was to go up. Now, I will take you through every generalized step I took to implementing a SIEM solution for my organization. All identifiable details will be redacted for security reasons, of course.</p>
 
-        <h3>Stream, don't batch</h3>
-        <p>I rewrote the result path as a chunked stream. The Rust service emits batches of 500 rows over a WebSocket as the scan produces them, and the client appends them to a virtualized table. First paint dropped to about 180 milliseconds because it no longer depends on total result size.</p>
+        <h3>Choosing the Software</h3>
+        <p>I chose an open-source, self hosted SIEM solution for my organization to satisfy my low budget constraints. Open source SIEM solutions are a great alternative to a SaaS SIEM such as Splunk or Microsoft Sentinel. The downside to my choice is this means I need to find a means of hosting the server.</p>
 
-        <h3>Keep the main thread free</h3>
-        <p>Parsing and column typing happen in a worker, and the table renders through WebGL rather than DOM nodes. Scrolling stays at 60fps while rows are still arriving, which mattered more than raw throughput — a janky table reads as broken even when it's fast.</p>
+        <h3>Hosting the SIEM</h3>
+        <p>Agent-based SIEM solutions work by having an agent installed on every endpoint you want to ingest logs from, that securely send this log data to a manager via secure protocols. This happens around the clock, so it is important for your SIEM manager to be hosted on a reliable server, maximizing uptime. Excessive downtime for a manager can mean missed logs and alerts if the agent’s buffers fill up. To avoid this buffer overflow and potential dropped logs, I chose to use an AWS EC2 instance to support the SIEM manager. I chose AWS for their high infrastructure reliability, granular access management (IAM), and cost effective scaling. This approach reduced the initial overhead cost of buying an on-site server. </p>
 
-        <h3>Be honest about partial data</h3>
-        <p>A streaming result is a half-truth until it finishes, and hiding that would have been worse than the spinner. Aggregates show a "still counting" state, sort controls are disabled until the scan completes, and the header shows exactly what fraction has been read.</p>
+        <h3>Key Cloud Considerations for SIEM Deployment</h3>
+            <p>While specific internal configurations are omitted for security reasons, several critical factors must be evaluated when deploying a cloud-based SIEM manager:</p>
+            
+            <ul>
+              <li>
+                <strong>Static Addressing:</strong> Ensure that your manager server has a fixed IP address. When you configure agents, they will send logs and other telemetry to a specific target IP you configure at deployment. Any IP change in the manager will cut off communication from the agents, and could lead to agent buffer overflow and potential dropped logs.
+              </li>
+              <li>
+                <strong>Storage Isolation:</strong> Maintain separate storage volumes, one for your operating system and the other for log data. This way, if log volumes unexpectedly spike, a full volume won’t cause the operating system to crash, mitigating this risk.
+              </li>
+              <li>
+                <strong>Network Hardening:</strong> Ensure you have tight firewall rules. Make sure the only open ports are those necessary and required by the agents. Additionally, you should restrict access to these ports to the known IP ranges of your endpoints. Finally, restrict access protocols like SSH to trusted IPs used by those who need access to the server.
+              <li>
+                <strong>Identity &amp; Access Control:</strong> Finally, avoid hardcoding access keys or API keys directly on the server. I would recommend instead that you attach a dedicated IAM role to the instance, and strictly enforce MFA for all accounts that can access the server console.
+              </li>
+            </ul>
 
+          <h3></h3>
+          <p></p>
+
+           
         <figure class="shot">
           <div class="ph"><p>Second image — a detail shot works well here<br><code>&lt;img src="images/tidewater-partial.png" alt="…"&gt;</code></p></div>
           <figcaption>The partial-state treatment. Anything that would be wrong mid-scan is visibly held back rather than quietly approximate.</figcaption>
