@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- ============================================================
+     CASE STUDY TEMPLATE — copy this file per project
+     1. Filename becomes the URL: tidewater.html -> /tidewater.html
+     2. <title> + <meta description> below
+     3. Header: project name, one-line summary, the facts list
+     4. Swap each .ph placeholder for a real <img> (commented example inside)
+     5. Sections: Problem / Approach / Decisions / Outcome
+     6. Update the "next project" card at the bottom
+     Keep this file next to index.html in the repo root.
+     ============================================================ -->
+
+<title>Tidewater — Sam Ellison</title>
+<meta name="description" content="A query console for a 40-billion-row telemetry store, built to return the first rows in under a second.">
+<meta property="og:title" content="Tidewater — a query console for very large telemetry">
+<meta property="og:description" content="Streaming partial results so analysts stop waiting on the spinner.">
+<meta property="og:type" content="article">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ---------- tokens (identical to index.html) ---------- */
+:root{
+  --paper:#eef1f6;
+  --sheet:#ffffff;
+  --ink:#15263a;
+  --slate:#556a80;
+  --blue:#2b62c6;
+  --sky:#7fa8dd;
+  --muted:#4f6d95;
+  --wash:#e3ebf7;
+  --line:#dde4ee;
+
+  --display:'Fraunces',Georgia,serif;
+  --body:'Instrument Sans',system-ui,sans-serif;
+  --util:'IBM Plex Mono',ui-monospace,monospace;
+
+  --maxw:1080px;
+  --gut:clamp(18px,4vw,40px);
+  --r:20px;
+  --lift:0 1px 2px rgba(21,38,58,.04), 0 14px 34px -16px rgba(21,38,58,.16);
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--slate);
+  font:400 clamp(15px,1.05vw,16.5px)/1.72 var(--body);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--wash);color:var(--ink)}
+:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:6px}
+
+.wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:var(--gut)}
+.label{font:500 11px/1 var(--util);letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:0;z-index:60;background:color-mix(in srgb,var(--paper) 85%,transparent);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.mark{font-family:var(--display);font-weight:600;font-size:17px;color:var(--ink);letter-spacing:-.01em}
+.back{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:99px;
+  font-size:14px;font-weight:500;color:var(--slate);transition:.25s var(--ease)}
+.back:hover{background:var(--wash);color:var(--blue)}
+.back span{transition:translate .25s var(--ease)}
+.back:hover span{translate:-3px 0}
+
+/* ---------- sheets ---------- */
+.sheet{background:var(--sheet);border-radius:var(--r);box-shadow:var(--lift);
+  padding:clamp(28px,5vw,56px)}
+section{padding-block:clamp(12px,2.5vh,22px)}
+section:first-of-type{padding-top:clamp(34px,6vh,60px)}
+
+/* ---------- project header ---------- */
+.top{position:relative;overflow:hidden}
+.top::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(56% 76% at 100% 0%, color-mix(in srgb,var(--sky) 28%,transparent), transparent 70%)}
+.top>*{position:relative}
+.kicker{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:20px}
+.kicker .chip{padding:5px 12px;border-radius:99px;background:var(--wash);color:var(--blue);
+  font:500 12px/1.4 var(--util)}
+h1{font-family:var(--display);font-weight:600;color:var(--ink);
+  font-size:clamp(36px,6.4vw,62px);line-height:1.04;letter-spacing:-.03em}
+.summary{max-width:52ch;margin-top:20px;font-size:1.12em;line-height:1.6;color:var(--slate)}
+.summary b{color:var(--ink);font-weight:500}
+
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:22px;
+  margin-top:36px;padding-top:28px;border-top:1px solid var(--line)}
+.facts div dt{font:500 10px/1 var(--util);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:7px}
+.facts div dd{font-size:15px;color:var(--ink);font-weight:500;line-height:1.5}
+.links{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:99px;
+  font-size:14px;font-weight:500;transition:.25s var(--ease)}
+.btn.solid{background:var(--blue);color:#fff;box-shadow:0 6px 18px -8px var(--blue)}
+.btn.solid:hover{background:var(--ink);translate:0 -1px}
+.btn.ghost{background:var(--sheet);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.btn.ghost:hover{box-shadow:inset 0 0 0 1px var(--sky);color:var(--blue);translate:0 -1px}
+
+/* ---------- images ---------- */
+figure{margin:0}
+.shot img{width:100%;height:auto;display:block;border-radius:14px;
+  box-shadow:0 1px 2px rgba(21,38,58,.05), 0 18px 40px -20px rgba(21,38,58,.25)}
+.ph{aspect-ratio:16/10;border-radius:14px;background:var(--paper);
+  border:1px dashed var(--line);display:grid;place-items:center;padding:24px;text-align:center}
+.ph p{font:400 12px/1.9 var(--util);color:var(--muted);max-width:46ch}
+.ph code{background:var(--wash);color:var(--blue);padding:2px 6px;border-radius:4px;font-size:11px}
+figcaption{margin-top:12px;font-size:13.5px;color:var(--muted);max-width:62ch}
+
+/* ---------- prose ---------- */
+.prose h2{font-family:var(--display);font-weight:600;color:var(--ink);
+  font-size:clamp(24px,3.2vw,32px);letter-spacing:-.02em;line-height:1.2;margin-bottom:18px}
+.prose h3{font-family:var(--body);font-weight:600;color:var(--ink);font-size:17px;
+  margin-top:30px;margin-bottom:8px}
+.prose p{max-width:68ch}
+.prose p+p{margin-top:15px}
+.prose b{color:var(--ink);font-weight:500}
+.prose ul{margin:14px 0 0;padding-left:0;max-width:68ch}
+.prose li{list-style:none;position:relative;padding-left:24px;margin-top:9px}
+.prose li::before{content:"";position:absolute;left:4px;top:11px;width:6px;height:6px;
+  border-radius:50%;background:var(--sky)}
+.prose .shot{margin-top:32px}
+
+/* ---------- numbers ---------- */
+.numbers{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:28px;
+  margin-top:34px;padding-top:30px;border-top:1px solid var(--line)}
+.numbers b{display:block;font-family:var(--display);font-weight:600;color:var(--blue);
+  font-size:clamp(30px,4.4vw,42px);letter-spacing:-.03em;line-height:1}
+.numbers span{display:block;margin-top:9px;font-size:14px;color:var(--slate);max-width:26ch}
+
+/* ---------- pull quote ---------- */
+.quote{margin-top:34px;padding:26px 28px;border-radius:14px;background:var(--paper)}
+.quote p{font-family:var(--display);font-weight:400;font-style:italic;color:var(--ink);
+  font-size:clamp(18px,2.4vw,23px);line-height:1.45;letter-spacing:-.015em;max-width:44ch}
+.quote cite{display:block;margin-top:14px;font:500 11px/1 var(--util);letter-spacing:.13em;
+  text-transform:uppercase;color:var(--muted);font-style:normal}
+
+/* ---------- next up ---------- */
+.nextup{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px;
+  transition:.28s var(--ease)}
+.nextup:hover{translate:0 -2px;box-shadow:0 1px 2px rgba(21,38,58,.05), 0 22px 44px -20px rgba(21,38,58,.26)}
+.nextup h3{font-family:var(--display);font-weight:600;color:var(--ink);
+  font-size:clamp(21px,2.8vw,27px);letter-spacing:-.02em;margin-top:6px}
+.nextup .go{font-size:22px;color:var(--sky);transition:.28s var(--ease)}
+.nextup:hover .go{color:var(--blue);translate:5px 0}
+
+footer{padding:34px 0 46px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;
+  font-size:13px;color:var(--muted)}
+
+/* ---------- reveal ---------- */
+.rise{opacity:0;translate:0 14px;transition:opacity .6s var(--ease),translate .6s var(--ease)}
+.rise.in{opacity:1;translate:0 0}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
+  .rise{opacity:1;translate:0 0}
+}
+</style>
+</head>
+
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="mark" href="index.html">Sam Ellison</a>
+    <a class="back" href="index.html#work"><span>←</span> All work</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- ================= PROJECT HEADER ================= -->
+  <section>
+    <div class="wrap">
+      <div class="sheet top">
+        <p class="kicker">
+          <span class="chip">2026</span>
+          <span class="label">Query console</span>
+        </p>
+
+        <h1>Tidewater</h1>
+
+        <p class="summary">A query console for a <b>40-billion-row telemetry store</b>. It streams partial results, so the first rows land in under a second instead of after a two-minute stare at a spinner.</p>
+
+        <dl class="facts">
+          <div><dt>Role</dt><dd>Lead engineer</dd></div>
+          <div><dt>Team</dt><dd>Three engineers, one designer</dd></div>
+          <div><dt>Timeline</dt><dd>Eight months, shipped Feb 2026</dd></div>
+          <div><dt>Stack</dt><dd>TypeScript, Rust, DuckDB, WebGL</dd></div>
+          <div><dt>Status</dt><dd>In production, ~400 daily users</dd></div>
+        </dl>
+
+        <div class="links">
+          <a class="btn solid" href="#" target="_blank" rel="noopener">Visit the live app</a>
+          <a class="btn ghost" href="#" target="_blank" rel="noopener">Read the source</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= LEAD IMAGE ================= -->
+  <section>
+    <div class="wrap">
+      <div class="sheet rise">
+        <figure class="shot">
+
+          <!-- Swap the block below for your real screenshot:
+          <img src="images/tidewater-console.png" alt="The Tidewater query console showing results streaming into a table while the query is still running."> -->
+
+          <div class="ph"><p>Replace this block with<br><code>&lt;img src="images/tidewater.png" alt="…"&gt;</code><br><br>Aim for roughly 2000px wide. Always write real alt text.</p></div>
+
+          <figcaption>The console mid-query: rows fill in from the top while the progress bar in the header keeps counting. Analysts can start reading before the scan finishes.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PROBLEM ================= -->
+  <section>
+    <div class="wrap">
+      <div class="sheet prose rise">
+        <h2>The problem</h2>
+        <p>Our analysts had a good query engine and a bad way to talk to it. The old console sent a query, waited for the complete result set, then rendered it all at once. On the telemetry tables — the ones people actually needed — that meant <b>90 to 140 seconds of blank screen</b> before anything appeared.</p>
+        <p>The cost wasn't only the waiting. Because feedback was so slow, people stopped exploring. They wrote one careful query a morning instead of ten rough ones, and typos cost two minutes each. Support tickets described it as the tool being broken, when the engine underneath was returning rows the whole time.</p>
+        <h3>Constraints we started with</h3>
+        <ul>
+          <li>The storage layer couldn't change — it was shared with three other teams.</li>
+          <li>Result sets are frequently over a million rows, so the browser can't hold them all.</li>
+          <li>Analysts live in this tool for hours; it had to stay responsive while data streamed.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= APPROACH ================= -->
+  <section>
+    <div class="wrap">
+      <div class="sheet prose rise">
+        <h2>The approach</h2>
+        <p>The insight was that <b>nobody reads a million rows</b> — they read the first thirty and decide whether the query was right. So the goal stopped being "return results faster" and became "show something true as early as possible."</p>
+
+        <h3>Stream, don't batch</h3>
+        <p>I rewrote the result path as a chunked stream. The Rust service emits batches of 500 rows over a WebSocket as the scan produces them, and the client appends them to a virtualized table. First paint dropped to about 180 milliseconds because it no longer depends on total result size.</p>
+
+        <h3>Keep the main thread free</h3>
+        <p>Parsing and column typing happen in a worker, and the table renders through WebGL rather than DOM nodes. Scrolling stays at 60fps while rows are still arriving, which mattered more than raw throughput — a janky table reads as broken even when it's fast.</p>
+
+        <h3>Be honest about partial data</h3>
+        <p>A streaming result is a half-truth until it finishes, and hiding that would have been worse than the spinner. Aggregates show a "still counting" state, sort controls are disabled until the scan completes, and the header shows exactly what fraction has been read.</p>
+
+        <figure class="shot">
+          <div class="ph"><p>Second image — a detail shot works well here<br><code>&lt;img src="images/tidewater-partial.png" alt="…"&gt;</code></p></div>
+          <figcaption>The partial-state treatment. Anything that would be wrong mid-scan is visibly held back rather than quietly approximate.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= OUTCOME ================= -->
+  <section>
+    <div class="wrap">
+      <div class="sheet prose rise">
+        <h2>What happened</h2>
+        <p>Adoption moved before we announced anything. The clearest signal wasn't latency — it was that queries per analyst per day roughly tripled, which is the behaviour change we were actually after.</p>
+
+        <div class="numbers">
+          <div><b>180ms</b><span>To first visible row, down from 94 seconds</span></div>
+          <div><b>3.1×</b><span>More queries run per analyst each day</span></div>
+          <div><b>~400</b><span>Daily users across four teams</span></div>
+        </div>
+
+        <div class="quote">
+          <p>I stopped writing queries like they were expensive.</p>
+          <cite>Staff analyst, six weeks after launch</cite>
+        </div>
+
+        <h3>What I'd do differently</h3>
+        <p>We spent the first six weeks on a query builder UI that almost nobody used — analysts wanted to write SQL. I should have shipped the streaming table alone and watched what people asked for next. The builder is still in the codebase, and I'd cut it.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= NEXT ================= -->
+  <section>
+    <div class="wrap">
+      <a class="sheet nextup rise" href="index.html#work">
+        <div>
+          <p class="label">Next project</p>
+          <h3>Harbor CLI</h3>
+        </div>
+        <span class="go">→</span>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>© <span id="yr">2026</span> Sam Ellison</p>
+    <p><a href="index.html">Back to portfolio</a></p>
+  </div>
+</footer>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+const io = new IntersectionObserver((rows) => {
+  rows.forEach(r => { if (r.isIntersecting) { r.target.classList.add('in'); io.unobserve(r.target); } });
+}, { rootMargin: '0px 0px -10% 0px' });
+document.querySelectorAll('.rise').forEach(el => io.observe(el));
+</script>
+</body>
+</html>

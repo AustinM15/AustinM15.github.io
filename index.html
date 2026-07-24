@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- ============================================================
+     EDIT THESE FIRST
+     1. <title> and the two <meta> tags below
+     2. Hero: name, the line under it, location, availability pill
+     3. Work: one <a class="row"> per project
+     4. About: paragraphs + the three toolkit lists
+     5. Contact: email address (appears twice: href + text)
+     6. Every link marked  href="#"  needs a real URL
+     ============================================================ -->
+
+<title>Sam Ellison — Software Engineer</title>
+<meta name="description" content="Software engineer building fast, durable web software. Selected work, tools, and contact.">
+<meta property="og:title" content="Sam Ellison — Software Engineer">
+<meta property="og:description" content="Software engineer building fast, durable web software.">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ---------- tokens ---------- */
+:root{
+  --paper:#eef1f6;        /* page — cool light grey */
+  --sheet:#ffffff;        /* content sheets */
+  --ink:#15263a;          /* headings — deep navy, softer than black */
+  --slate:#556a80;        /* body text */
+  --blue:#2b62c6;         /* primary action */
+  --sky:#7fa8dd;          /* decorative only — too light for text */
+  --muted:#4f6d95;        /* small labels, years, captions */
+  --wash:#e3ebf7;         /* tint fills */
+  --line:#dde4ee;         /* hairlines */
+
+  --display:'Fraunces',Georgia,serif;
+  --body:'Instrument Sans',system-ui,sans-serif;
+  --util:'IBM Plex Mono',ui-monospace,monospace;
+
+  --maxw:1080px;
+  --gut:clamp(18px,4vw,40px);
+  --r:20px;
+  --lift:0 1px 2px rgba(21,38,58,.04), 0 14px 34px -16px rgba(21,38,58,.16);
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);
+  color:var(--slate);
+  font:400 clamp(15px,1.05vw,16.5px)/1.72 var(--body);
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--wash);color:var(--ink)}
+:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:6px}
+
+.wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:var(--gut)}
+
+.label{font:500 11px/1 var(--util);letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:0;z-index:60;
+  background:color-mix(in srgb,var(--paper) 85%,transparent);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.mark{font-family:var(--display);font-weight:600;font-size:17px;color:var(--ink);letter-spacing:-.01em}
+.bar nav{display:flex;gap:8px}
+.bar nav a{padding:7px 14px;border-radius:99px;font-size:14px;font-weight:500;
+  color:var(--slate);transition:.25s var(--ease)}
+.bar nav a:hover{background:var(--wash);color:var(--blue)}
+
+/* ---------- sheets + margin labels ---------- */
+.sheet{background:var(--sheet);border-radius:var(--r);box-shadow:var(--lift);
+  padding:clamp(28px,5vw,56px)}
+section{padding-block:clamp(26px,5vh,46px)}
+.tagged{position:relative}
+.tagged>.label{margin-bottom:14px;display:block}
+@media(min-width:1240px){
+  .tagged>.label{position:absolute;left:-104px;top:calc(clamp(28px,5vw,56px) + 4px);
+    margin:0;text-align:right;width:80px}
+}
+
+.head{margin-bottom:34px}
+.head h2{font-family:var(--display);font-weight:600;color:var(--ink);
+  font-size:clamp(26px,3.4vw,34px);letter-spacing:-.02em;line-height:1.15}
+.head p{margin-top:8px;font-size:.95em}
+
+/* ---------- hero ---------- */
+.hero{padding-top:clamp(34px,6vh,60px)}
+.hero .sheet{position:relative;overflow:hidden;padding-block:clamp(40px,8vw,76px)}
+.hero .sheet::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(58% 78% at 100% 0%, color-mix(in srgb,var(--sky) 30%,transparent), transparent 70%),
+    radial-gradient(46% 62% at 88% 34%, color-mix(in srgb,var(--wash) 92%,transparent), transparent 72%);
+}
+.hero>.wrap>.sheet>*{position:relative}
+
+.pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 10px;border-radius:99px;
+  background:var(--wash);color:var(--blue);font-size:13px;font-weight:500}
+.pip{width:7px;height:7px;border-radius:50%;background:var(--blue);
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--blue) 16%,transparent)}
+
+h1{margin:24px 0 0;font-family:var(--display);font-weight:600;color:var(--ink);
+  font-size:clamp(38px,7.2vw,72px);line-height:1.02;letter-spacing:-.03em;max-width:15ch}
+h1 em{font-style:italic;font-weight:400;color:var(--blue)}
+.thesis{max-width:50ch;margin-top:22px;font-size:1.1em;line-height:1.62}
+.thesis b{color:var(--ink);font-weight:500}
+
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:34px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:99px;
+  font-size:14px;font-weight:500;transition:.25s var(--ease)}
+.btn.solid{background:var(--blue);color:#fff;box-shadow:0 6px 18px -8px var(--blue)}
+.btn.solid:hover{background:var(--ink);translate:0 -1px}
+.btn.ghost{background:var(--sheet);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.btn.ghost:hover{box-shadow:inset 0 0 0 1px var(--sky);color:var(--blue);translate:0 -1px}
+
+.meta{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:34px;
+  padding-top:24px;border-top:1px solid var(--line);font-size:14px}
+.meta span{color:var(--ink);font-weight:500}
+
+/* ---------- work rows ---------- */
+.row{display:grid;grid-template-columns:74px 1fr 24px;gap:22px;align-items:start;
+  padding:24px;margin-inline:-24px;border-radius:14px;transition:.28s var(--ease)}
+.row+.row{margin-top:2px}
+.row:hover{background:color-mix(in srgb,var(--wash) 55%,transparent)}
+.year{font:500 12px/1.9 var(--util);color:var(--muted);padding-top:3px}
+.row:hover .year{color:var(--blue)}
+.row h3{font-family:var(--display);font-weight:600;color:var(--ink);
+  font-size:clamp(19px,2.2vw,23px);letter-spacing:-.015em;line-height:1.25}
+.row p{margin-top:7px;max-width:58ch;font-size:.95em}
+.stack{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.stack li{list-style:none;padding:4px 10px;border-radius:99px;background:var(--wash);
+  font:400 11px/1.5 var(--util);color:var(--slate)}
+.go{align-self:center;color:var(--line);font-size:18px;transition:.28s var(--ease)}
+.row:hover .go{color:var(--blue);translate:4px 0}
+@media(max-width:640px){
+  .row{grid-template-columns:1fr;gap:8px;padding:20px;margin-inline:-20px}
+  .go{display:none}
+}
+
+/* ---------- about ---------- */
+.split{display:grid;grid-template-columns:1.3fr .9fr;gap:clamp(28px,5vw,60px);align-items:start}
+@media(max-width:860px){.split{grid-template-columns:1fr}}
+.prose p+p{margin-top:15px}
+.prose b{color:var(--ink);font-weight:500}
+.kit{background:var(--paper);border-radius:14px;padding:24px}
+.kit h4{font:500 10px/1 var(--util);letter-spacing:.15em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:10px}
+.kit h4+ul{margin-bottom:22px}
+.kit ul:last-child{margin-bottom:0}
+.kit li{list-style:none;display:flex;justify-content:space-between;gap:14px;
+  font-size:14px;line-height:2;color:var(--ink)}
+.kit li i{font-style:normal;font:400 12px/2 var(--util);color:var(--slate)}
+
+/* ---------- contact ---------- */
+.mail{display:inline-block;font-family:var(--display);font-weight:600;color:var(--ink);
+  font-size:clamp(24px,4.6vw,44px);letter-spacing:-.025em;line-height:1.15;
+  background-image:linear-gradient(var(--blue),var(--blue));
+  background-size:0 2px;background-position:0 100%;background-repeat:no-repeat;
+  transition:background-size .45s var(--ease),color .25s}
+.mail:hover{color:var(--blue);background-size:100% 2px}
+.elsewhere{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+.elsewhere a{padding:9px 16px;border-radius:99px;background:var(--paper);
+  font-size:14px;font-weight:500;color:var(--ink);transition:.25s var(--ease)}
+.elsewhere a:hover{background:var(--wash);color:var(--blue)}
+
+footer{padding:30px 0 44px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;
+  font-size:13px;color:var(--muted)}
+
+/* ---------- reveal ---------- */
+.rise{opacity:0;translate:0 14px;transition:opacity .6s var(--ease),translate .6s var(--ease)}
+.rise.in{opacity:1;translate:0 0}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
+  .rise{opacity:1;translate:0 0}
+}
+</style>
+</head>
+
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="mark" href="#top">Sam Ellison</a>
+    <nav>
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ================= HERO ================= -->
+  <div class="hero">
+    <div class="wrap">
+      <div class="sheet">
+        <p class="pill"><i class="pip"></i>Open to new work</p>
+
+        <h1>Sam Ellison builds <em>calm</em> software.</h1>
+
+        <p class="thesis">Engineer working on <b>developer tools and data-heavy interfaces</b>. Six years spent making things that stay fast long after the demo is over.</p>
+
+        <div class="actions">
+          <a class="btn solid" href="mailto:you@example.com">Get in touch</a>
+          <a class="btn ghost" href="#" target="_blank" rel="noopener">GitHub</a>
+          <a class="btn ghost" href="#">Résumé</a>
+        </div>
+
+        <p class="meta">
+          <span>Portland, Maine</span> · Remote friendly · <span>Senior engineer</span> at an analytics company
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= WORK ================= -->
+  <section id="work">
+    <div class="wrap tagged">
+      <p class="label">Work</p>
+      <div class="sheet rise">
+        <div class="head">
+          <h2>Selected work</h2>
+          <p>Four projects I'd want to talk about, newest first.</p>
+        </div>
+
+        <a class="row" href="tidewater.html">
+          <p class="year">2026</p>
+          <div>
+            <h3>Tidewater</h3>
+            <p>A query console for a 40-billion-row telemetry store. Streams partial results so the first rows land in under a second, and keeps the tab responsive while the rest arrives.</p>
+            <ul class="stack"><li>TypeScript</li><li>Rust</li><li>DuckDB</li><li>WebGL</li></ul>
+          </div>
+          <span class="go">→</span>
+        </a>
+
+        <a class="row" href="#" target="_blank" rel="noopener">
+          <p class="year">2025</p>
+          <div>
+            <h3>Harbor CLI</h3>
+            <p>Deploy tooling for small teams without a platform group. One config file, reproducible builds, and rollbacks that finish before anyone opens the incident channel.</p>
+            <ul class="stack"><li>Go</li><li>Docker</li><li>Terraform</li></ul>
+          </div>
+          <span class="go">→</span>
+        </a>
+
+        <a class="row" href="#" target="_blank" rel="noopener">
+          <p class="year">2024</p>
+          <div>
+            <h3>Fathom</h3>
+            <p>Open-source charting library for time series with gaps, irregular sampling, and missing data — the cases most libraries quietly draw wrong. Used by roughly 900 projects.</p>
+            <ul class="stack"><li>Canvas</li><li>TypeScript</li><li>Zero deps</li></ul>
+          </div>
+          <span class="go">→</span>
+        </a>
+
+        <a class="row" href="#" target="_blank" rel="noopener">
+          <p class="year">2023</p>
+          <div>
+            <h3>Buoy</h3>
+            <p>Status page that reads uptime from the same probes on-call already trusts, so the public page and the internal dashboard can never disagree.</p>
+            <ul class="stack"><li>Elixir</li><li>Phoenix</li><li>Postgres</li></ul>
+          </div>
+          <span class="go">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ABOUT ================= -->
+  <section id="about">
+    <div class="wrap tagged">
+      <p class="label">About</p>
+      <div class="sheet rise">
+        <div class="split">
+          <div class="prose">
+            <div class="head"><h2>A bit about me</h2></div>
+            <p>I write software for people who look at the same screen every day. That usually means <b>interfaces that show a lot of data without getting slow</b>, plus the unglamorous infrastructure that keeps them honest.</p>
+            <p>Right now I lead the query experience team at a mid-size analytics company. Before that: two startups, one of which worked, and a few years maintaining an open-source scheduler used by more people than I expected.</p>
+            <p>I care about <b>latency budgets, legible error states, and code a new hire can read on their first afternoon</b>. Away from the keyboard I'm usually on the water or fixing something on an old motorcycle.</p>
+          </div>
+
+          <aside class="kit">
+            <h4>Core</h4>
+            <ul>
+              <li>TypeScript <i>6 yrs</i></li>
+              <li>Go <i>4 yrs</i></li>
+              <li>Rust <i>2 yrs</i></li>
+              <li>Postgres <i>6 yrs</i></li>
+            </ul>
+            <h4>Also fluent</h4>
+            <ul>
+              <li>React</li>
+              <li>Elixir</li>
+              <li>Terraform</li>
+              <li>WebGL</li>
+            </ul>
+            <h4>Learning now</h4>
+            <ul>
+              <li>Zig</li>
+              <li>Query planning</li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONTACT ================= -->
+  <section id="contact">
+    <div class="wrap tagged">
+      <p class="label">Contact</p>
+      <div class="sheet rise">
+        <div class="head">
+          <h2>Say hello</h2>
+          <p>Hiring, contract work, or a question about something above — all welcome. I reply within a day.</p>
+        </div>
+        <a class="mail" href="mailto:you@example.com">you@example.com</a>
+        <div class="elsewhere">
+          <a href="#" target="_blank" rel="noopener">GitHub</a>
+          <a href="#" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="#" target="_blank" rel="noopener">Writing</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>© <span id="yr">2026</span> Sam Ellison</p>
+    <p>Built by hand</p>
+  </div>
+</footer>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+const io = new IntersectionObserver((rows) => {
+  rows.forEach(r => { if (r.isIntersecting) { r.target.classList.add('in'); io.unobserve(r.target); } });
+}, { rootMargin: '0px 0px -10% 0px' });
+document.querySelectorAll('.rise').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
