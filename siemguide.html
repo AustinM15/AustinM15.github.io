@@ -263,13 +263,29 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;
               </li>
             </ul>
 
-          <h3></h3>
-          <p></p>
+          <h3>Post-Deployment (When the real work starts)</h3>
+          <p>After your agents are deployed and correctly sending log data securely to your manager, this is where the real work starts. In a typical environment, where workstations are working around the clock, it is easy to see tens of thousands of alerts coming through the SIEM every day. Even for me, in a small environment, I was seeing ~80,000 alerts a week. This is where tuning and noise suppression come into play. I created custom noise suppression rules that tuned out repetitive, confirmed benign alerts. This step is a very personal step, you need to know your environment, the devices on it, and what is trusted and what isn’t. My personal approach was to tackle the alerts triggering the most amount of times first, and working my way down until I had a sustainable and readable alert stream.</p>
+
+          <h3>Noise Reduction, An Impossible Task</h3>
+          <p>Noisy Alerts are something that will never go away. There are thousands of benign processes and network traffic that are impossible to write suppression rules for, and generally sometimes that you should not write suppression rules for. Tuning is a forever recurring part of analyzing a SIEM, and it is important to reduce Alert Fatigue. Alert fatigue happens when repetitive benign alerts create a bias in the analyst to graze over or skip certain alerts, believing them to be benign because similar alerts were. This is a real security vulnerability and is what make noise tuning so important.</p>
+
+          <h3>Custom Rules and Detections</h3>
+          <p>Custom detections are a great way to harden your security environment. While many SIEM solutions come with pre-installed configurations for rules and log assessments, it can be very advantageous to write your own rules, with your specific environment in mind. One example from my experiences is custom alerts to detect successful user log-in (Event ID 4624) events outside of business hours. For me, this personalized our SIEM solution to our business needs, and everyone’s organization is different.</p> 
+
+          <h3>Some SOAR Basics</h3> 
+          <p>Automation can be a very useful tool when integrated with your SIEM solution. In my case specifically, I found automated alerts directly to my business email a great way to compensate for not having 24/7 monitoring of logs. Since I am only one person, it is impossible and unreasonable to expect me to monitor logs all day, and due to the nature of being a small business it is implausible to hire dedicated analysts to monitor around the clock. This compensating control allows me to have more visibility throughout my day into what is happening with my systems, even when I am not sitting at my screen monitoring logs.</p> 
+
+          <h3>Dashboards</h3>
+          <p>Dashboards are a very efficient way to monitor certain types of activity within your system. They can allow for increased efficiency when monitoring your SIEM. For example, I implemented a dashboard that immediately told me the number of failed logins on my systems, and which users were responsible. This allows me to monitor for any anomalies, or numbers inconsistent with our baseline. For me, dashboards were incredibly helpful in speeding up my analysis processes.</p>
+
+          <h3>A Well Rounded Security Posture</h3>
+          <p>For a successful modern SIEM architecture, it is important to ingest logs from multiple vectors to create a more well rounded and comprehensive security posture. While Windows Event Logs are pretty typical, effective monitoring requires data across many different potential attack surfaces, such as network endpoints, cloud environments, and core operational platforms such as Microsoft 365, GitHub, etc.</p> 
+
 
            
         <figure class="shot">
-          <div class="ph"><p>Second image — a detail shot works well here<br><code>&lt;img src="images/tidewater-partial.png" alt="…"&gt;</code></p></div>
-          <figcaption>The partial-state treatment. Anything that would be wrong mid-scan is visibly held back rather than quietly approximate.</figcaption>
+          <div class="ph"><p>Second Image Not Yet Determined</p></div>
+          <figcaption>Second Image Not Yet Determined</figcaption>
         </figure>
       </div>
     </div>
@@ -280,43 +296,27 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;
     <div class="wrap">
       <div class="sheet prose rise">
         <h2>What happened</h2>
-        <p>Adoption moved before we announced anything. The clearest signal wasn't latency — it was that queries per analyst per day roughly tripled, which is the behaviour change we were actually after.</p>
+        <p>I successfully increased visibility across our critical business systems, and funnelled logs into one, centralized and easy to analyze surface. I also tuned benign alerts down from over ~80,000 a week, to ~100 medium severity and ~5 high severity alerts per day, and automated critical notifications to alert me outside of my working hours.</p>
 
         <div class="numbers">
-          <div><b>180ms</b><span>To first visible row, down from 94 seconds</span></div>
-          <div><b>3.1×</b><span>More queries run per analyst each day</span></div>
-          <div><b>~400</b><span>Daily users across four teams</span></div>
-        </div>
-
-        <div class="quote">
-          <p>I stopped writing queries like they were expensive.</p>
-          <cite>Staff analyst, six weeks after launch</cite>
+          <div><b>20</b><span>Agents Now Reporting Log Data</span></div>
+          <div><b>~80,000</b><span>Benign, noisy alerts suppressed per week</span></div>
+          <div><b>$0</b><span>Everything was implemented for completely free</span></div>
         </div>
 
         <h3>What I'd do differently</h3>
-        <p>We spent the first six weeks on a query builder UI that almost nobody used — analysts wanted to write SQL. I should have shipped the streaming table alone and watched what people asked for next. The builder is still in the codebase, and I'd cut it.</p>
+        <p>If I had to start over, one thing I would change about my process would be to focus on configuring my different log sources before initial noise tuning. An issue I ran into, was once I thought I had determined a solid baseline for alerts, after installing Sysmon on devices, this baseline went completely out the window. If I were to start over, I would prioritize all log ingestion sources before focusing on noise reduction.</p>
       </div>
     </div>
   </section>
 
-  <!-- ================= NEXT ================= -->
-  <section>
-    <div class="wrap">
-      <a class="sheet nextup rise" href="index.html#work">
-        <div>
-          <p class="label">Next project</p>
-          <h3>Harbor CLI</h3>
-        </div>
-        <span class="go">→</span>
-      </a>
-    </div>
-  </section>
+  
 
 </main>
 
 <footer>
   <div class="wrap">
-    <p>© <span id="yr">2026</span> Sam Ellison</p>
+    <p>© <span id="yr">2026</span> Austin Mason</p>
     <p><a href="index.html">Back to portfolio</a></p>
   </div>
 </footer>
